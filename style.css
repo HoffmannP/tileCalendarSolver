@@ -1,0 +1,83 @@
+#spinner {
+    animation: spin-animation .5s linear infinite;
+    display: inline-block;
+    position: relative;
+    top: 1vmin;
+    font-size: 5vmin;
+}
+#spinner::after {
+    content: '◔';
+}
+@keyframes spin-animation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.grid {
+    display: inline-grid;
+    grid-template: repeat(8, 1fr) / repeat(7, 1fr);
+    grid-gap: .2vmin;
+    width: auto;
+    margin: 6vmin;
+}
+
+.grid > div {
+    width: 10vmin;
+    height: 10vmin;
+    background-color: var(--main-color);
+    border: .3vmin inset var(--main-color);
+    border-radius: 3px;
+}
+
+.grid > div.tile_ {
+    border: none;
+}
+.grid > div.tile_date {
+    --main-color: black;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 7vmin;
+}
+.tile_0 {
+    --main-color: maroon;
+}
+.tile_1 {
+    --main-color: red;
+}
+.tile_2 {
+    --main-color: purple;
+}
+.tile_3 {
+    --main-color: fuchsia;
+}
+.tile_4 {
+    --main-color: green;
+}
+.tile_5 {
+    --main-color: lime;
+}
+.tile__ {
+    --main-color: olive;
+}
+.tile_6 {
+    --main-color: navy;
+}
+.tile_7 {
+    --main-color: blue;
+}
+.tile_8 {
+    --main-color: teal;
+}
+.tile_9 {
+    --main-color: aqua;
+}
+.tile_x {
+    --main-color: grey;
+}
