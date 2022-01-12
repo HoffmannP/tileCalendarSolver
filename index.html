@@ -1,41 +1,10 @@
 <html>
 <head>
-    <title>Test parallize</title>
-    <script>
-        const NR_WORKERS = 10
-
-        let workers = Array(NR_WORKERS).fill(0)
-
-        function log(message) {
-            document.querySelector('body')
-                .insertAdjacentHTML(
-                    'beforeend',
-                    `<div>${message}</div>`
-                )
-        }
-
-        function show(message) {
-            log(`worker is done: ${message.data}`)
-            log(performance.now())
-        }
-
-        function startCalc() {
-            log(performance.now())
-            workers.forEach((w, i) => {
-                w.addEventListener('message', show)
-                w.postMessage('start')
-                log(`start worker ${i}`)
-            })
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            workers = workers.map(_ => new Worker('workertest.js'))
-            document.querySelector('button')
-                .addEventListener('click', startCalc)
-        })
-    </script>
+    <title>Calender</title>
+    <script type="module" src="script.js"></script>
+    <link type="text/css" rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <button>Start</button>
+    <input type="date" />
 </body>
 </html>
