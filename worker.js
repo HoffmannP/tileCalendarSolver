@@ -41,17 +41,15 @@ function calculateTiles ({ date, surface }) {
 
   const solutions = []
   const startTime = self.performance.now()
-  console.log('Start')
   for (const solution of solve(bord, tileList)) {
     const solutionText = bordToString(solution)
     if (solutions.includes(solutionText)) {
       continue
     }
     solutions.push(solutionText)
-    console.log('Solution')
+
     self.postMessage({ type: 'solution', bord: solution })
   }
-  console.log('End')
   self.postMessage({
     type: 'end',
     runtime: Math.round(self.performance.now() - startTime),
@@ -75,7 +73,7 @@ function initBoard (date) {
   bord[Math.floor(date.getMonth() / 6)][
     date.getMonth() % 6] = datePart[1]
   bord[Math.floor((date.getDate() - 1) / 7) + 2][
-    (date.getDate() - 1) % 7] = `Day ${datePart[2]}`
+    (date.getDate() - 1) % 7] = `d${datePart[2]}`
   bord[Math.floor(date.getDay() / 4) + 6][
     date.getDay() + (date.getDay() > 3 ? 0 : 3)] = datePart[0]
   return bord

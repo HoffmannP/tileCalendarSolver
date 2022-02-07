@@ -1,10 +1,17 @@
 <html>
 <head>
-    <title>Solve Tile Calendar</title>
+    <title>Calender</title>
     <script type="module" src="script.js"></script>
     <link type="text/css" rel="stylesheet" href="style.css" />
 </head>
 <body>
     <input type="date" />
+    <fieldset class="surface">
+        <legend>surface</legend>
+        <label><input type="radio" name="surface" value="0"> all</label>
+        <label><input checked type="radio" name="surface" value="1"> matte</label>
+        <label><input type="radio" name="surface" value="2"> glossy</label>
+    </fieldset>
+    <div class="solutions"></div>
 </body>
 </html>
