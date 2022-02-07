@@ -1,7 +1,10 @@
 /* eslint-env browser */
 
+let worker
+
 function log (message) {
-  document.querySelector('body').insertAdjacentHTML('beforeend', `<div>${message}</div>`)
+  document.querySelector('.solutions')
+    .insertAdjacentHTML('beforeend', `<div class="grid"><div class="text">${message}</div></div>`)
   console.log(message)
 }
 
@@ -19,7 +22,7 @@ function formatCell (cell) {
 }
 
 function showSolution (bord) {
-  document.querySelector('body').insertAdjacentHTML('beforeend',
+  document.querySelector('.solutions').insertAdjacentHTML('beforeend',
     `<div class="grid">${bord.map((row) => row.map((cell) => formatCell(cell)
     ).join('')).join('')}</div>`
   )
@@ -31,20 +34,27 @@ function receiveMessage (messageEvent) {
     return showSolution(message.bord)
   }
   if (message.type === 'end') {
+    document.querySelector('body').classList.remove('running')
     return log(`Found ${message.count} solutions after ${Math.round(message.runtime / 100) / 10}s`)
   }
-  console.log(message)
 }
 
-function startCalc (changeEvent) {
-  this.addEventListener('message', receiveMessage)
-  this.postMessage(changeEvent.target.valueAsDate)
+function startCalc () {
+  worker?.terminate()
+  worker = new Worker('worker.js')
+  document.querySelector('.solutions').innerHTML = ''
+  document.querySelector('body').classList.add('running')
+  const date = document.querySelector('[type="date"]').valueAsDate
+  const surface = document.querySelector('[name="surface"]:checked').value
+  worker.addEventListener('message', receiveMessage)
+  worker.postMessage({ date, surface })
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const worker = new Worker('worker.js')
-  const date = document.querySelector('input')
-  date.addEventListener('change', startCalc.bind(worker))
+  document.querySelector('.surface')
+    .addEventListener('change', startCalc)
+  const date = document.querySelector('[type="date"]')
+  date.addEventListener('change', startCalc)
   date.valueAsDate = new Date()
   date.dispatchEvent(new Event('change'))
 })

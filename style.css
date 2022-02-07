@@ -1,41 +1,91 @@
-input[type="date"] {
-    display: block
+body {
+    margin: .5vmin;
+    height: calc(100vh - 1vmin);
+    display: grid;
+    grid-template: 8vmin auto / 1fr 1fr;
+    grid-template-areas:
+        "date surface"
+        "board board";
+    grid-gap: .5vmin;
+    overflow: hidden;
+    font-family: sans-serif;
+    font-size: 3.3vmin;
+}
+@media screen and (orientation:portrait) {
+    body {
+        grid-template: 8vmin 8vmin auto / 1fr;
+        grid-template-areas:
+            "date"
+            "surface"
+            "board";
+    }
 }
 
-#spinner {
-    animation: spin-animation .5s linear infinite;
-    display: inline-block;
-    position: relative;
-    top: 1vmin;
-    font-size: 5vmin;
+.running {
+    background-size: 100% 200%;
+    background-image: linear-gradient(white 0%, red 1%, white 2%, white 50%, red 51%, white 52%);
+    animation: calc-animation 2s linear infinite;
 }
-#spinner::after {
-    content: '◔';
-}
-@keyframes spin-animation {
+@keyframes calc-animation {
     0% {
-        transform: rotate(0deg);
+        background-position-y: 0%;
     }
-
     100% {
-        transform: rotate(360deg);
+        background-position-y: -100%;
     }
+}
+
+input[type="date"] {
+    font-family: inherit;
+    font-size: inherit;
+    border: 2px groove grey;
+    grid-area: date;
+    background-color: transparent;
+    text-align: center;
+    margin: 2px;
+}
+fieldset {
+    grid-area: surface;
+    display: grid;
+    grid-template: 1fr / repeat(3, 1fr);
+    align-content: center;
+    border: 2px groove grey;
+    margin: 2px;
+}
+fieldset label {
+    text-align: center;
+}
+
+.solutions {
+    grid-area: board;
+    display: flex;
+    overflow: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 5vmin;
 }
 
 .grid {
+    scroll-snap-align: start;
+    scroll-padding: 5vmin;
     display: inline-grid;
-    grid-template: repeat(8, 1fr) / repeat(7, 1fr);
-    /* grid-gap: 2vmin; */
+    grid-template: repeat(8, 10vmin) / repeat(7, 10vmin);
+    /* grid-gap: .2vmin; */
     width: auto;
     margin: 5vmin;
 }
 
 .grid > div {
-    width: 10vmin;
-    height: 10vmin;
     background-color: var(--main-color);
     border: .3vmin inset var(--main-color);
     /* border-radius: 3px; */
+}
+
+.grid > .text {
+    grid-area: 1 / 2 / span 2 / span 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: lightyellow;
 }
 
 .grid > div.tile_x {
@@ -43,7 +93,7 @@ input[type="date"] {
 }
 .grid > div.tile_date {
     --main-color: black;
-    background-color: transparent;
+    background-color: white;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -51,7 +101,7 @@ input[type="date"] {
 }
 .grid>div.tile_day {
     --main-color: black;
-    background-color: transparent;
+    background-color: white;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -92,6 +142,6 @@ input[type="date"] {
     --main-color: aqua;
 }
 .tile_x {
-    --main-color: #d3d3d3;
+    --main-color: transparent;
     border: none;
 }

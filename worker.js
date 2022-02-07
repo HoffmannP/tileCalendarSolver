@@ -1,38 +1,42 @@
 /* eslint-env worker */
 
-const SURFACE = 1 // 0 = all, 1 = matte, 2 = glossy
 const FREE = 'x'
 const NIL = ' '
-const O_FLIP = [0, 4]
-const O_HLF1 = [0, 1, 2, 3]
-const O_HMAT = [0, 5]
-const O_HGLO = [1, 4]
-const O_HLF2 = SURFACE === 0 ? O_HGLO.concat(O_HMAT) : SURFACE === 1 ? O_HMAT : O_HGLO
-const O_HLF3 = [0, 1, 4, 5]
-const O_FMAT = [0, 3, 5, 6]
-const O_FGLO = [1, 2, 4, 7]
-const O_FULL = SURFACE === 0 ? O_FGLO.concat(O_FMAT) : SURFACE === 1 ? O_FMAT : O_FGLO
-const TILES = [
-  //                                     id block
-  [O_FLIP, [0, 0], [0, 1], [0, 2], [0, 3]], //         0 ▀▀▀▀
-  [O_HLF1, [0, 0], [0, 1], [0, 2], [1, 2], [2, 2]], // 1      ▀▀█
-  [O_HLF2, [0, 0], [0, 1], [1, 1], [1, 2]], //         2 ▀█▄  ▄ ▀
-  [O_HLF2, [0, 0], [1, 0], [1, 1], [1, 2], [2, 2]], // 3      ▀▀█
-  [O_HLF3, [0, 0], [0, 1], [0, 2], [1, 1], [2, 1]], // 4 ▀█▀
-  [O_HLF3, [0, 0], [0, 1], [0, 2], [1, 0], [1, 2]], // 5  ▀   █▀█
-  [O_FULL, [0, 0], [0, 1], [0, 2], [0, 3], [1, 0]], // 6 █▀▀▀
-  [O_FULL, [0, 0], [0, 1], [0, 2], [1, 0]], //         7      █▀▀
-  [O_FULL, [0, 0], [0, 1], [0, 2], [1, 1], [1, 2]], // 8 ▀██
-  [O_FULL, [0, 2], [0, 3], [1, 0], [1, 1], [1, 2]] //  9     ▄▄█▀
-].map((t) => ({
-  orientation: t[0],
-  pieces: t.slice(1).map((p) => ({ x: p[0], y: p[1] }))
-}))
+let tiles = []
+
+function generateTiles (surface) {
+  const O_FLIP = [0, 4]
+  const O_HLF1 = [0, 1, 2, 3]
+  const O_HMAT = [0, 5]
+  const O_HGLO = [1, 4]
+  const O_HLF2 = surface === 0 ? O_HGLO.concat(O_HMAT) : surface === 1 ? O_HMAT : O_HGLO
+  const O_HLF3 = [0, 1, 4, 5]
+  const O_FMAT = [0, 3, 5, 6]
+  const O_FGLO = [1, 2, 4, 7]
+  const O_FULL = surface === 0 ? O_FGLO.concat(O_FMAT) : surface === 1 ? O_FMAT : O_FGLO
+  return [
+    //                                     id block
+    [O_FLIP, [0, 0], [0, 1], [0, 2], [0, 3]], //         0 ▀▀▀▀
+    [O_HLF1, [0, 0], [0, 1], [0, 2], [1, 2], [2, 2]], // 1      ▀▀█
+    [O_HLF2, [0, 0], [0, 1], [1, 1], [1, 2]], //         2 ▀█▄  ▄ ▀
+    [O_HLF2, [0, 0], [1, 0], [1, 1], [1, 2], [2, 2]], // 3      ▀▀█
+    [O_HLF3, [0, 0], [0, 1], [0, 2], [1, 1], [2, 1]], // 4 ▀█▀
+    [O_HLF3, [0, 0], [0, 1], [0, 2], [1, 0], [1, 2]], // 5  ▀   █▀█
+    [O_FULL, [0, 0], [0, 1], [0, 2], [0, 3], [1, 0]], // 6 █▀▀▀
+    [O_FULL, [0, 0], [0, 1], [0, 2], [1, 0]], //         7      █▀▀
+    [O_FULL, [0, 0], [0, 1], [0, 2], [1, 1], [1, 2]], // 8 ▀██
+    [O_FULL, [0, 2], [0, 3], [1, 0], [1, 1], [1, 2]] //  9     ▄▄█▀
+  ].map((t) => ({
+    orientation: t[0],
+    pieces: t.slice(1).map((p) => ({ x: p[0], y: p[1] }))
+  }))
+}
 
 self.addEventListener('message', message => calculateTiles(message.data))
 
-function calculateTiles (date) {
-  const tileList = Object.keys(TILES)
+function calculateTiles ({ date, surface }) {
+  tiles = generateTiles(+surface)
+  const tileList = Object.keys(tiles)
   const bord = initBoard(date)
 
   const solutions = []
@@ -84,7 +88,7 @@ function * solve (bord, remainingTiles) {
     return
   }
   for (const { id, orientation, piece } of iterTiles(remainingTiles)) {
-    const ptile = positionTile(nextFree, orientTile(TILES[id].pieces, orientation), piece)
+    const ptile = positionTile(nextFree, orientTile(tiles[id].pieces, orientation), piece)
     if (!checkTile(bord, ptile)) {
       continue
     }
@@ -110,8 +114,8 @@ function freePosition (bord) {
 
 function * iterTiles (remainingTiles) {
   for (const id of remainingTiles) {
-    for (const orientation of TILES[id].orientation) {
-      for (const piece in TILES[id].pieces) {
+    for (const orientation of tiles[id].orientation) {
+      for (const piece in tiles[id].pieces) {
         yield { id, orientation, piece }
       }
     }
