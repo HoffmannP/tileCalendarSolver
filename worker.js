@@ -1,6 +1,6 @@
 /* eslint-env worker */
 
-const SURFACE = 0 // 0 = all, 1 = matte, 2 = glossy
+const SURFACE = 1 // 0 = all, 1 = matte, 2 = glossy
 const FREE = 'x'
 const NIL = ' '
 const O_FLIP = [0, 4]
@@ -37,14 +37,17 @@ function calculateTiles (date) {
 
   const solutions = []
   const startTime = self.performance.now()
+  console.log('Start')
   for (const solution of solve(bord, tileList)) {
     const solutionText = bordToString(solution)
     if (solutions.includes(solutionText)) {
       continue
     }
     solutions.push(solutionText)
+    console.log('Solution')
     self.postMessage({ type: 'solution', bord: solution })
   }
+  console.log('End')
   self.postMessage({
     type: 'end',
     runtime: Math.round(self.performance.now() - startTime),
@@ -57,16 +60,20 @@ function bordToString (bord) {
 }
 
 function initBoard (date) {
-  const dateText = (obj) => date.toLocaleDateString('default', obj)
+  const datePart = date.toLocaleDateString('en', {
+    month: 'short',
+    day: 'numeric',
+    weekday: 'short'
+  }).split(/[., ]+/)
   const bord = Array(8).fill().map(i => Array(7).fill(FREE))
   ;[0, 1].forEach(j => (bord[j][6] = NIL))
   ;[0, 1, 2, 3].forEach(i => (bord[7][i] = NIL))
   bord[Math.floor(date.getMonth() / 6)][
-    date.getMonth() % 6] = dateText({ month: 'short' })
+    date.getMonth() % 6] = datePart[1]
   bord[Math.floor((date.getDate() - 1) / 7) + 2][
-    (date.getDate() - 1) % 7] = `Day ${dateText({ day: 'numeric' })}`
+    (date.getDate() - 1) % 7] = `Day ${datePart[2]}`
   bord[Math.floor(date.getDay() / 4) + 6][
-    date.getDay() + (date.getDay() > 3 ? 0 : 3)] = dateText({ weekday: 'short' })
+    date.getDay() + (date.getDay() > 3 ? 0 : 3)] = datePart[0]
   return bord
 }
 

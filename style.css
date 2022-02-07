@@ -1,3 +1,7 @@
+input[type="date"] {
+    display: block
+}
+
 #spinner {
     animation: spin-animation .5s linear infinite;
     display: inline-block;
@@ -21,9 +25,9 @@
 .grid {
     display: inline-grid;
     grid-template: repeat(8, 1fr) / repeat(7, 1fr);
-    grid-gap: .2vmin;
+    /* grid-gap: 2vmin; */
     width: auto;
-    margin: 6vmin;
+    margin: 5vmin;
 }
 
 .grid > div {
@@ -31,11 +35,11 @@
     height: 10vmin;
     background-color: var(--main-color);
     border: .3vmin inset var(--main-color);
-    border-radius: 3px;
+    /* border-radius: 3px; */
 }
 
-.grid > div.tile_ {
-    border: none;
+.grid > div.tile_x {
+    border-style: solid;
 }
 .grid > div.tile_date {
     --main-color: black;
@@ -43,8 +47,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 5vmin;
+}
+.grid>div.tile_day {
+    --main-color: black;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-size: 7vmin;
 }
+
 .tile_0 {
     --main-color: maroon;
 }
@@ -79,5 +92,6 @@
     --main-color: aqua;
 }
 .tile_x {
-    --main-color: grey;
+    --main-color: #d3d3d3;
+    border: none;
 }
