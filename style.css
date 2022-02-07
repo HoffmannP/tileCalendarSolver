@@ -38,13 +38,14 @@ body {
 }
 
 input[type="date"] {
+    grid-area: date;
+    display: block;
+    margin: 2px;
+    border: 2px groove grey;
+    background-color: transparent;
     font-family: inherit;
     font-size: inherit;
-    border: 2px groove grey;
-    grid-area: date;
-    background-color: transparent;
     text-align: center;
-    margin: 2px;
 }
 fieldset {
     grid-area: surface;
