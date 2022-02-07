@@ -52,11 +52,27 @@ fieldset {
     display: grid;
     grid-template: 1fr / repeat(3, 1fr);
     align-content: center;
-    border: 2px groove grey;
+    grid-gap: .5vmin;
+    /* border: 2px groove grey; */
+    border: none;
+    padding: 0;
     margin: 2px;
 }
 fieldset label {
+    color: lightgrey;
+    text-shadow: 1px 1px gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px outset grey;
     text-align: center;
+}
+fieldset input {
+    display: none;
+}
+fieldset input:checked + label {
+    color: inherit;
+    text-shadow: none;
 }
 
 .solutions {

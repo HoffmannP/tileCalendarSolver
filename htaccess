@@ -1,0 +1,7 @@
+<FilesMatch "\.(css|js|woff|json)$">
+    # two years for assets
+    Header set Cache-Control "max-age=63072000, public"
+</FilesMatch>
+<FilesMatch "\.(html)$">
+  Header set Cache-Control "max-age=300, public"
+</FilesMatch>
